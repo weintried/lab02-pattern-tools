@@ -23,6 +23,7 @@ setup_env.bat
 此腳本將會：
 - 創建一個虛擬環境 (`venv/`)。
 - 安裝必要的 Python 套件。
+🉑 此腳本只需要在第一次使用時執行
 
 #### 2️⃣ **啟動虛擬環境**
 執行 `activate_env.bat`：
@@ -32,9 +33,10 @@ activate_env.bat
 此腳本將會：
 - 啟動虛擬環境。
 - 開啟命令提示字元，讓你可以執行 Python 腳本。
+🉑 每次要使用時，都使用這個腳本開啟命令行
 
 #### 3️⃣ **執行迷宮腳本**
-啟動環境後，執行：
+啟動環境後，會跳出命令行，請執行：
 ```bat
 python pattern_gen.py
 python pattern_edit.py maze_patterns.txt
@@ -139,5 +141,5 @@ python pattern_edit.py maze_patterns.txt
 ---
 
 ## 📝 授權條款
-本專案為 **開源專案**，自由使用與修改！🚀
+本專案為 **AI 生成**，我真的要被取代了，耶！🚀
 
