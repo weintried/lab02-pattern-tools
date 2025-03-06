@@ -502,7 +502,13 @@ if __name__ == "__main__":
 
 
     # Generate N patterns and categorize them
-    N = 10
+    # N = 10
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("num_patterns", type=int, nargs="?", default=10, help="Number of patterns to generate")
+    args = parser.parse_args()
+    N = args.num_patterns
+
     categories = {
         "no_swords_no_monsters": [],
         "only_swords": [],

@@ -38,6 +38,28 @@
   - 是否有唯一路線，且可以通過
   - 是否僅在偶數行列放置牆壁
 
+### 📈 ~~`pattern_viz.py`~~
+- ~~沒用到~~
+
+---
+
+## 📄 資料說明
+
+### 根據 `pattern_gen.py` 生成的迷宮，有三種可能的樣式：
+#### `swords_and_monsters.txt`
+- 在唯一路線上，依序會遇到劍與怪物
+#### `no_swords_no_monsters.txt`
+- 在唯一路線上，沒有劍與怪物
+#### `only_swords.txt`
+- 在唯一路線上，只有劍，沒有怪物
+#### `detour_swords.txt`
+- 在唯一路線上，有怪物，但是劍在偏離路線且可以到達的地方
+#### ~~`input.txt`~~
+- ~~沒用到~~
+
+### `<目前使用中 pattern 檔案>_edited.txt`
+- 使用 `pattern_edit.py` 編輯迷宮完，按下 `Save Pattern` 按鈕，會將編輯後的迷宮寫在此檔案
+
 ---
 
 ## 🖥️ 安裝與使用方式
@@ -73,10 +95,10 @@ activate_env.bat
 🉑 每次要使用時，都使用這個腳本開啟命令行
 
 #### 3️⃣ **執行迷宮腳本**
-啟動環境後，會跳出命令行，請執行：
+啟動環境後，會跳出命令行，可以執行：
 ```bat
 python pattern_gen.py
-python pattern_edit.py maze_patterns.txt
+python pattern_edit.py <欲使用之 pattern 檔案>.txt
 ```
 
 ---

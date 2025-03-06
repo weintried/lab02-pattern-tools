@@ -223,6 +223,13 @@ class MazePatternEditorApp:
         self.control_frame = ttk.Frame(root, padding="10")
         self.control_frame.pack(fill=tk.X)
         
+        # Using pattern from file
+        ttk.Label(self.control_frame, text="File:").pack(side=tk.LEFT, padx=(0,1))
+        ttk.Label(self.control_frame, text=os.path.splitext(os.path.basename(file_path))[0]).pack(side=tk.LEFT)
+
+        # add a extending spacer
+        ttk.Label(self.control_frame, text="").pack(side=tk.LEFT, fill=tk.X, expand=True)
+
         # Dropdown to select pattern
         ttk.Label(self.control_frame, text="Select Pattern:").pack(side=tk.LEFT, padx=(0,10))
         self.pattern_var = tk.StringVar()
