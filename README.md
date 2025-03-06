@@ -10,6 +10,31 @@
 - `matplotlib`
 - `tkinter`（Python 內建，但某些系統可能需要手動安裝）
 
+☝️ 目前只有在 `python 3.12` 上測試過，但其實更早更早的版本應該也可以
+
+---
+
+## 📜 腳本說明
+
+### 🛠️ `setup_env.bat` / `setup_env.ps1`
+- 建立 Python 虛擬環境 (`venv/`)。
+- 安裝所需的 Python 套件 (`numpy`、`matplotlib`、`tkinter`)。
+- 確保環境可用於執行迷宮腳本。
+
+### 🚀 `activate_env.bat` / `activate_env.ps1`
+- 啟動虛擬環境。
+- 開啟命令提示字元，讓使用者可以手動執行腳本。
+
+### 🏗️ `pattern_gen.py`
+- 生成隨機的 17x17 迷宮。
+- 根據特定規則放置 **劍（2）** 和 **怪物（3）**。
+- 將生成的迷宮存成 `.txt` 文件。
+
+### 🖍️ `pattern_edit.py`
+- 提供 **圖形化介面（GUI）** 來編輯迷宮。
+- 允許使用者修改牆壁、道路、劍、怪物的位置。
+- 確保迷宮符合特定條件，例如「可解性」。
+
 ---
 
 ## 🖥️ 安裝與使用方式
@@ -100,26 +125,11 @@ python pattern_edit.py maze_patterns.txt
 
 ---
 
-## 📜 腳本說明
+## 🚮 如何刪除
 
-### 🛠️ `setup_env.bat` / `setup_env.ps1`
-- 建立 Python 虛擬環境 (`venv/`)。
-- 安裝所需的 Python 套件 (`numpy`、`matplotlib`、`tkinter`)。
-- 確保環境可用於執行迷宮腳本。
+將整個 `venv` 資料夾刪除，即可刪除環境
 
-### 🚀 `activate_env.bat` / `activate_env.ps1`
-- 啟動虛擬環境。
-- 開啟命令提示字元，讓使用者可以手動執行腳本。
-
-### 🏗️ `pattern_gen.py`
-- 生成隨機的 17x17 迷宮。
-- 根據特定規則放置 **劍（2）** 和 **怪物（3）**。
-- 將生成的迷宮存成 `.txt` 文件。
-
-### 🖍️ `pattern_edit.py`
-- 提供 **圖形化介面（GUI）** 來編輯迷宮。
-- 允許使用者修改牆壁、道路、劍、怪物的位置。
-- 確保迷宮符合特定條件，例如「可解性」。
+將整個 clone 下來的資料夾刪除，即可刪除全部資料
 
 ---
 
