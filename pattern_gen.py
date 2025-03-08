@@ -1,6 +1,7 @@
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+from collections import deque
 
 def plot_maze(maze, solution_path=None):
     """
@@ -313,12 +314,15 @@ def generate_maze_with_entities(sword_count=1, monster_count=1, monster_on_path_
                 accessible_before_monster = find_accessible_cells(temp_maze, (0, 0))
                 
                 # Remove cells that are on the critical path
-                detour_cells = [cell for cell in accessible_before_monster 
-                              if cell not in solution_path and temp_maze[cell[0]][cell[1]] == 0]
+                detour_swords = []
+                for cell in accessible_before_monster:
+                    r, c = cell
+                    if maze_17[r][c] == 2:  # Sword
+                        detour_swords.append(cell)
                 
-                if detour_cells:
+                if detour_swords:
                     # Place sword in a detour location
-                    sword_pos = random.choice(detour_cells)
+                    sword_pos = random.choice(detour_swords)
                     r, c = sword_pos
                     maze_17[r][c] = 2  # Sword
                     continue
@@ -419,11 +423,55 @@ def generate_random_maze_17x17():
 
     return maze_17
 
+def check_maze_solvable(maze):
+    """
+    Check if the maze is solvable under game rules:
+    - Start at (0,0) without a sword.
+    - Must collect a sword (cell value 2) before encountering a monster (cell value 3).
+    Returns True if there is a valid path from start to finish, otherwise False.
+    """
+    N = len(maze)
+    start = (0, 0)
+    finish = (N-1, N-1)
+    # State is (row, col, have_sword)
+    q = deque()
+    q.append((0, 0, False))
+    visited = set()
+    visited.add((0, 0, False))
+    
+    while q:
+        r, c, have_sword = q.popleft()
+        if (r, c) == finish:
+            return True
+        for dr, dc in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < N and 0 <= nc < N:
+                cell = maze[nr][nc]
+                new_have_sword = have_sword
+                if cell == 1:  # wall
+                    continue
+                elif cell == 2:  # sword: pick it up
+                    new_have_sword = True
+                elif cell == 3:
+                    if not have_sword:
+                        continue
+                state = (nr, nc, new_have_sword)
+                if state not in visited:
+                    visited.add(state)
+                    q.append(state)
+    return False
+
 if __name__ == "__main__":
     # Generate N patterns and categorize them
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("num_patterns", type=int, nargs="?", default=10, help="Number of patterns to generate")
+    parser.add_argument("--num-patterns", type=int, nargs="?", default=10, help="Number of patterns to generate")
+    parser.add_argument("--write-mode", type=str, nargs="?", default='a', help="Write mode for saving patterns (a = append, w = write)")
+    parser.add_argument("--no-swords-no-monsters", type=int, nargs="?", default=1, help="Generate patterns with no swords or monsters")
+    parser.add_argument("--only-swords", type=int, nargs="?", default=1, help="Generate patterns with only swords")
+    parser.add_argument("--swords-and-monsters", type=int, nargs="?", default=1, help="Generate patterns with swords and monsters")
+    parser.add_argument("--detour-swords", type=int, nargs="?", default=1, help="Generate patterns with detour swords")
+
     args = parser.parse_args()
     N = args.num_patterns
 
@@ -434,7 +482,27 @@ if __name__ == "__main__":
         "detour_swords": []
     }
 
-    for i in range(N):
+    # clear files storing specified category if write mode is 'w'
+    if args.write_mode == 'w':
+        if args.no_swords_no_monsters:
+            with open("no_swords_no_monsters.txt", 'w') as f:
+                pass
+        elif args.only_swords:
+            with open("only_swords.txt", 'w') as f:
+                pass
+        elif args.swords_and_monsters:
+            with open("swords_and_monsters.txt", 'w') as f:
+                pass
+        elif args.detour_swords:
+            with open("detour_swords.txt", 'w') as f:
+                pass
+
+    saved_patterns = 0
+    # for i in range(N):
+    while saved_patterns < N:
+
+        i = saved_patterns
+
         print(f"Generating pattern {i+1}/{N}...")
         # Randomize parameters for variety
         sword_count = random.randint(1, 3)
@@ -450,6 +518,11 @@ if __name__ == "__main__":
             sword_on_path_prob=sword_on_path_prob
         )
         
+        # NEW: Check overall maze solvability under game rules.
+        if not check_maze_solvable(maze):
+            print("Pattern discarded (unsolvable): Detour sword appears behind a monster blocking the path.")
+            continue
+
         # Check if any monsters are on the critical path
         monsters_on_path = [pos for pos in monster_positions if pos in solution_path]
         
@@ -505,18 +578,26 @@ if __name__ == "__main__":
         
         # Save the pattern if it's valid
         if category:
-            pattern_num = len(categories[category]) + 1
-            # filename = f"{category}_{pattern_num}.txt"
-            filename = category + ".txt"
-            
+            # skip saving to file if not needed
+            if category == "no_swords_no_monsters" and not args.no_swords_no_monsters:
+                continue
+            elif category == "only_swords" and not args.only_swords:
+                continue
+            elif category == "swords_and_monsters" and not args.swords_and_monsters:
+                continue
+            elif category == "detour_swords" and not args.detour_swords:
+                continue
+
             # Export maze to text file
+            filename = category + ".txt"
             export_maze_to_txt(maze, filename=filename, transpose=True, export_flat=False, mode='a')
             categories[category].append(filename)
             
             print(f"Saved pattern to {filename} (Category: {category})")
+            saved_patterns += 1
         else:
             print("Pattern discarded (unsolvable)")
-
+    
     # Print summary
     print("\nGeneration Summary:")
     for category, files in categories.items():
