@@ -216,6 +216,10 @@ class MazePatternEditorApp:
         self.file_path = file_path
         self.current_pattern_idx = 0
 
+        # Register window close event
+        # self.root.protocol("WM_DELETE_WINDOW", self.root.quit)
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
         self.root.title("Maze Pattern Editor")
         self.root.geometry("900x900")
 
@@ -288,6 +292,10 @@ class MazePatternEditorApp:
         self.update_plot()
         self.update_warnings()
         self.update_button_states()
+
+    def on_closing(self):
+        plt.close(self.fig)
+        self.root.destroy()
 
     def update_plot(self):
         self.ax.clear()
