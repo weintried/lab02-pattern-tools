@@ -96,8 +96,6 @@ def export_maze_to_txt(maze, filename="maze.txt", transpose=False, export_flat=F
             for row in maze:
                 f.write(' '.join(map(str, row)) + '\n')
             f.write('\n')
-    
-    print(f"Maze exported to {filename}{' (transposed)' if transpose else ''}")
 
     if export_flat:
         # Also export as flat list for direct use in the testbench
@@ -467,6 +465,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--num-patterns", type=int, nargs="?", default=10, help="Number of patterns to generate")
     parser.add_argument("--write-mode", type=str, nargs="?", default='a', help="Write mode for saving patterns (a = append, w = write)")
+    parser.add_argument("--mixed", type=int, nargs="?", default=0, help="Write all patterns in one files")
+
+    parser.add_argument("--monster-min", type=int, nargs="?", default=1, help="Minimum number of monsters")
+    parser.add_argument("--monster-max", type=int, nargs="?", default=3, help="Maximum number of monsters")
+    parser.add_argument("--sword-min", type=int, nargs="?", default=1, help="Minimum number of swords")
+    parser.add_argument("--sword-max", type=int, nargs="?", default=3, help="Maximum number of swords")
+    parser.add_argument("--monster-on-path-prob", type=float, nargs="?", default=0.5, help="Probability of placing a monster on the critical path")
+    parser.add_argument("--sword-on-path-prob", type=float, nargs="?", default=0.3, help="Probability of placing swords directly on the critical path")
+
     parser.add_argument("--no-swords-no-monsters", type=int, nargs="?", default=1, help="Generate patterns with no swords or monsters")
     parser.add_argument("--only-swords", type=int, nargs="?", default=1, help="Generate patterns with only swords")
     parser.add_argument("--swords-and-monsters", type=int, nargs="?", default=1, help="Generate patterns with swords and monsters")
@@ -484,18 +491,19 @@ if __name__ == "__main__":
 
     # clear files storing specified category if write mode is 'w'
     if args.write_mode == 'w':
-        if args.no_swords_no_monsters:
-            with open("no_swords_no_monsters.txt", 'w') as f:
-                pass
-        elif args.only_swords:
-            with open("only_swords.txt", 'w') as f:
-                pass
-        elif args.swords_and_monsters:
-            with open("swords_and_monsters.txt", 'w') as f:
-                pass
-        elif args.detour_swords:
-            with open("detour_swords.txt", 'w') as f:
-                pass
+        print("Clearing existing files...")
+        if not args.mixed:
+            print("Clearing individual category files...")
+            if args.no_swords_no_monsters:
+                open("no_swords_no_monsters.txt", 'w').close()
+            if args.only_swords:
+                open("only_swords.txt", 'w').close()
+            if args.swords_and_monsters:
+                open("swords_and_monsters.txt", 'w').close()
+            if args.detour_swords:
+                open("detour_swords.txt", 'w').close()
+        else:
+            open("mixed.txt", 'w').close()
 
     saved_patterns = 0
     # for i in range(N):
@@ -505,10 +513,10 @@ if __name__ == "__main__":
 
         print(f"Generating pattern {i+1}/{N}...")
         # Randomize parameters for variety
-        sword_count = random.randint(1, 3)
-        monster_count = random.randint(1, 3)
-        monster_on_path_prob = random.uniform(0.4, 0.8)
-        sword_on_path_prob = random.uniform(0.3, 0.7)
+        sword_count = random.randint(args.sword_min, args.sword_max)
+        monster_count = random.randint(args.monster_min, args.monster_max)
+        sword_on_path_prob = args.sword_on_path_prob
+        monster_on_path_prob = args.monster_on_path_prob
 
         # Generate maze
         maze, solution_path, monster_positions = generate_maze_with_entities(
@@ -589,7 +597,7 @@ if __name__ == "__main__":
                 continue
 
             # Export maze to text file
-            filename = category + ".txt"
+            filename = category + ".txt" if not args.mixed else "mixed.txt"
             export_maze_to_txt(maze, filename=filename, transpose=True, export_flat=False, mode='a')
             categories[category].append(filename)
             
@@ -600,5 +608,6 @@ if __name__ == "__main__":
     
     # Print summary
     print("\nGeneration Summary:")
+    print(args.num_patterns, "patterns generated.")
     for category, files in categories.items():
         print(f"{category}: {len(files)} patterns")
