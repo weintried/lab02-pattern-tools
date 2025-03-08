@@ -32,11 +32,22 @@
 
 #### 命令行參數說明
 ```bash
-python pattern_gen.py [--num-patterns N] [--write-mode MODE] [--no-swords-no-monsters 0|1] [--only-swords 0|1] [--swords-and-monsters 0|1] [--detour-swords 0|1]
+python pattern_gen.py [--num-patterns N] [--write-mode MODE] [--mixed 0|1] 
+                     [--monster-min MIN] [--monster-max MAX] [--sword-min MIN] [--sword-max MAX]
+                     [--monster-on-path-prob PROB] [--sword-on-path-prob PROB]
+                     [--no-swords-no-monsters 0|1] [--only-swords 0|1] 
+                     [--swords-and-monsters 0|1] [--detour-swords 0|1]
 ```
 
 - `--num-patterns N`: 生成迷宮的數量（預設: 10）
 - `--write-mode MODE`: 文件寫入模式，'a'為追加，'w'為覆寫（預設: 'a'）
+- `--mixed 0|1`: 是否將所有迷宮類型保存在同一個檔案中（預設: 0 = 否）
+- `--monster-min MIN`: 迷宮中的最小怪物數量（預設: 1）
+- `--monster-max MAX`: 迷宮中的最大怪物數量（預設: 3）
+- `--sword-min MIN`: 迷宮中的最小劍數量（預設: 1）
+- `--sword-max MAX`: 迷宮中的最大劍數量（預設: 3）
+- `--monster-on-path-prob PROB`: 在關鍵路徑上放置怪物的機率（預設: 0.5）
+- `--sword-on-path-prob PROB`: 在關鍵路徑上放置劍的機率（預設: 0.3，較低值會迫使更多繞路取劍）
 - `--no-swords-no-monsters 0|1`: 是否生成無劍無怪物的迷宮（預設: 1 = 是）
 - `--only-swords 0|1`: 是否生成只有劍的迷宮（預設: 1 = 是）
 - `--swords-and-monsters 0|1`: 是否生成有劍和怪物的迷宮（預設: 1 = 是）
@@ -52,6 +63,12 @@ python pattern_gen.py --write-mode w
 
 # 只生成有劍和怪物的迷宮，不生成其他類型
 python pattern_gen.py --no-swords-no-monsters 0 --only-swords 0 --detour-swords 0 --swords-and-monsters 1
+
+# 設定怪物和劍的數量範圍
+python pattern_gen.py --monster-min 2 --monster-max 4 --sword-min 1 --sword-max 2
+
+# 將所有迷宮保存在同一個檔案中
+python pattern_gen.py --mixed 1
 ```
 
 ### 🖍️ `pattern_edit.py`
@@ -209,5 +226,5 @@ python pattern_edit.py maze_patterns.txt
 ---
 
 ## 📝 授權條款
-本專案為 **AI 生成**，我真的要被取代了，耶！🚀
+本專案為 **AI 生成**，我真的要被取代了，LET'S GOOOOOOOOOO！🚀
 
